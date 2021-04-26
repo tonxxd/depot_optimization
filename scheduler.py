@@ -1,15 +1,6 @@
 
-from datetime import date
-import pandas as pd
-import shutil
-import sys
 import numpy as np
-import os
 import math
-import random
-import datetime
-import logging
-import time
 import copy
 from mip import *
 
@@ -156,9 +147,8 @@ def parse_results(modelVars):
             "is_at_depot": list(map(lambda x: x, modelVars["is_at_depot"][j])),
             'is_charging': list(map(lambda x: x.x, modelVars["is_charging"][j])),
             'is_discharging': list(map(lambda x: x.x, modelVars["is_discharging"][j])),
-            "soc":  list(map(lambda x: min(x,100), toOneMinuteInterval(soc, True))),
+            "soc":  list(map(lambda x: x, toOneMinuteInterval(soc, True))),
             "real_soc": soc
-            #'DisCharging': model.is_discharging[j,:]()
         })
     data["schedule"] = schedule
     return data
@@ -190,12 +180,7 @@ def get_min(TASKS,options={}, solver='cbc'):
     
         model, PARAMS = SchedulingModel(TASKS, upper_bound=current_peak, userOptions=options)
         model.emphasis=1
-        # model.gap = .01
-        # model.max_mip_gap=.1
-        # model.integer_tol = .1
-        # model.infeas_tol = .1
-
-        #model.max_seconds=100
+       
         results = model.optimize(max_nodes_same_incumbent = 1, max_solutions=1, max_seconds_same_incumbent=1)
         
         print("TRIED",current_peak, results)
